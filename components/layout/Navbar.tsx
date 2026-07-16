@@ -3,6 +3,8 @@
 import { CiHeart, CiSearch, CiShoppingCart } from "react-icons/ci";
 import { motion } from "framer-motion";
 import type { MotionProps } from "framer-motion";
+import { HiMenuAlt2 } from "react-icons/hi";
+import { fraunces, playfair } from "@/lib/fonts";
 
 export default function Navbar() {
   const iconHover: MotionProps = {
@@ -20,15 +22,21 @@ export default function Navbar() {
       damping: 10,
     },
   };
+
   return (
-    <nav className="flex justify-between items-center px-5 md:px-10 py-5 bg-[#F7F5F2] text-[#1A1A1A]">
-      <h3 className="text-sm hidden md:block tracking-wide font-semibold uppercase cursor-pointer hover:text-[#B5532C] transition-colors">
+    <nav className="flex justify-between items-center px-2 md:px-10 py-3 bg-[#F7F5F2] text-[#1A1A1A]">
+      <h3
+        className={` ${fraunces.className} text-sm hidden md:block tracking-wide font-semibold 
+      uppercase cursor-pointer hover:text-[#B5532C] transition-colors`}
+      >
         Products
       </h3>
 
-      <div className="font-serif text-xl tracking-wide">Or & Loom</div>
+      <div className={` ${playfair.className} text-xl tracking-wide`}>
+        Or & Loom
+      </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2.5 md:4">
         <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
           <CiSearch size={22} />
         </motion.div>
@@ -38,6 +46,9 @@ export default function Navbar() {
         <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
           <CiShoppingCart size={22} />
         </motion.div>
+        <div className="block md:hidden">
+          <HiMenuAlt2 />
+        </div>
       </div>
     </nav>
   );
