@@ -1,16 +1,45 @@
+"use client";
+
 import { playfair } from "@/lib/fonts";
 import bannerImg1 from "@/public/Images/Banner/banner1.avif";
 import bannerImg2 from "@/public/Images/Banner/helen-ast-wXCQCVpsRQ0-unsplash.jpg";
 import Image from "next/image";
 import Link from "next/link";
 import { GoArrowRight } from "react-icons/go";
+import { motion } from "framer-motion";
+import type { MotionProps } from "framer-motion";
+
+const ctaAnimation: MotionProps = {
+  whileHover: {
+    y: -5,
+    opacity: 0.85,
+  },
+  whileTap: {
+    scale: 0.97,
+  },
+  transition: {
+    type: "spring",
+    stiffness: 300,
+    damping: 10,
+  },
+};
+
+const arrowAnimation: MotionProps = {
+  whileHover: {
+    x: 5,
+  },
+  transition: {
+    type: "spring",
+    stiffness: 400,
+  },
+};
 
 export default function Banner() {
   return (
     <div className="relative">
-      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen ">
         {/* Men's Banner */}
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen ">
           <Image
             src={bannerImg1}
             alt="Menswear banner"
@@ -26,22 +55,22 @@ export default function Banner() {
               pb-20 text-[#F7F5F2]
             "
           >
-            <Link
-              href="/men"
-              className="
-                flex items-center gap-2
-                uppercase tracking-[0.2em]
-                hover:opacity-70 transition-opacity
-              "
-            >
-              Shop all menswear
-              <GoArrowRight size={18} />
-            </Link>
+            <motion.div {...ctaAnimation}>
+              <Link
+                href="/men"
+                className="flex items-center gap-2 uppercase tracking-[0.2em]"
+              >
+                Shop all menswear
+                <motion.div {...arrowAnimation}>
+                  <GoArrowRight size={18} />
+                </motion.div>
+              </Link>
+            </motion.div>
           </div>
         </div>
 
         {/* Women's Banner */}
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen ">
           <Image
             src={bannerImg2}
             alt="Womenswear banner"
@@ -57,17 +86,17 @@ export default function Banner() {
               pb-20 text-[#F7F5F2]
             "
           >
-            <Link
-              href="/women"
-              className="
-                flex items-center gap-2
-                uppercase tracking-[0.2em]
-                hover:opacity-70 transition-opacity
-              "
-            >
-              Shop all womenswear
-              <GoArrowRight size={18} />
-            </Link>
+            <motion.div {...ctaAnimation}>
+              <Link
+                href="/women"
+                className="flex items-center gap-2 uppercase tracking-[0.2em]"
+              >
+                Shop all womenswear
+                <motion.div {...arrowAnimation}>
+                  <GoArrowRight size={18} />
+                </motion.div>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </div>
