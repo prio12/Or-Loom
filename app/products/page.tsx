@@ -4,19 +4,31 @@ import { fraunces, playfair } from "@/lib/fonts";
 import { RiMenuFold2Fill } from "react-icons/ri";
 import products from "@/data/products.json";
 import { useState } from "react";
-import { CiGrid2H, CiGrid2V } from "react-icons/ci";
 import { IoGridOutline } from "react-icons/io5";
 import { IoMdGrid } from "react-icons/io";
 import ProductCard from "@/components/ui/ProductCard";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
+import Drawer from "@/components/layout/Drawer";
 
 export default function Products() {
   const categories = ["All", ...new Set(products.map((p) => p.category))];
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [viewMode, setViewMode] = useState<"grid" | "compact">("grid");
+  const [sortOrder, setSortOrder] = useState<
+    "none" | "low-to-high" | "high-to-low"
+  >("none");
 
   const filteredProducts =
     selectedCategory === "All"
       ? products
       : products.filter((p) => p.category === selectedCategory);
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortOrder === "low-to-high") return a.price - b.price;
+    if (sortOrder === "high-to-low") return b.price - a.price;
+    return 0;
+  });
 
   const mobileSpanPattern = [6, 6, 4, 4, 4, 12];
 
@@ -33,6 +45,29 @@ export default function Products() {
     4: "md:col-span-4",
     6: "md:col-span-6",
     12: "md:col-span-12",
+  };
+
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: 0.05 },
+    },
+  };
+
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const closeDrawer = () => {
+    const drawerCheckbox = document.getElementById(
+      "filter-drawer",
+    ) as HTMLInputElement;
+    if (drawerCheckbox) drawerCheckbox.checked = false;
   };
 
   return (
@@ -57,7 +92,8 @@ export default function Products() {
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div
+        <label
+          htmlFor="filter-drawer"
           className={`
             ${playfair.className}
             order-1
@@ -70,7 +106,49 @@ export default function Products() {
         >
           <RiMenuFold2Fill />
           <p>Filter & Sort</p>
-        </div>
+        </label>
+
+        <Drawer id="filter-drawer">
+          <ul>
+            <li className="mb-2 font-medium">Sort by</li>
+            <li>
+              <button
+                onClick={() => {
+                  setSortOrder("low-to-high");
+                  closeDrawer();
+                }}
+                className={`text-sm py-2 ${sortOrder === "low-to-high" ? "font-semibold text-[#B5532C]" : ""}`}
+              >
+                Price: Low to High
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  setSortOrder("high-to-low");
+                  closeDrawer();
+                }}
+                className={`text-sm py-2 ${sortOrder === "high-to-low" ? "font-semibold text-[#B5532C]" : ""}`}
+              >
+                Price: High to Low
+              </button>
+            </li>
+            <li className="mt-4 mb-2 font-medium">Category</li>
+            {categories.map((cat) => (
+              <li key={cat}>
+                <button
+                  onClick={() => {
+                    setSelectedCategory(cat);
+                    closeDrawer();
+                  }}
+                  className="text-sm py-2"
+                >
+                  {cat}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Drawer>
 
         {/* Categories */}
         <div
@@ -104,34 +182,51 @@ export default function Products() {
 
         {/* View Toggle */}
         <div className="flex items-center gap-2 shrink-0 order-2 md:order-3">
-          <button className="p-2 hover:bg-[#B5532C1A] rounded transition-colors">
-            <CiGrid2H size={20} />
-          </button>
-
-          <button className="p-2 hover:bg-[#B5532C1A] rounded transition-colors">
-            <CiGrid2V size={20} />
-          </button>
-
-          <button className="p-2 hover:bg-[#B5532C1A] rounded transition-colors">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`p-2 rounded transition-colors cursor-pointer ${
+              viewMode === "grid"
+                ? "bg-[#1A1A1A] text-white"
+                : "hover:bg-[#B5532C1A]"
+            }`}
+          >
             <IoGridOutline size={20} />
           </button>
 
-          <button className="p-2 hover:bg-[#B5532C1A] rounded transition-colors">
+          <button
+            onClick={() => setViewMode("compact")}
+            className={`p-2 rounded transition-colors cursor-pointer ${
+              viewMode === "compact"
+                ? "bg-[#1A1A1A] text-white"
+                : "hover:bg-[#B5532C1A]"
+            }`}
+          >
             <IoMdGrid size={20} />
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6 mt-8">
-        {filteredProducts.map((product, i) => (
-          <div
+      <motion.div
+        key={`${selectedCategory}-${viewMode}-${sortOrder}`}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className={`grid gap-6 mt-8 ${viewMode === "grid" ? "grid-cols-12" : "grid-cols-2 md:grid-cols-4"}`}
+      >
+        {sortedProducts.map((product, i) => (
+          <motion.div
             key={product.id}
-            className={`${mobileSpanClasses[mobileSpanPattern[i % mobileSpanPattern.length]]} ${desktopSpanClasses[desktopSpanPattern[i % desktopSpanPattern.length]]}`}
+            variants={cardVariants}
+            className={
+              viewMode === "grid"
+                ? `${mobileSpanClasses[mobileSpanPattern[i % mobileSpanPattern.length]]} ${desktopSpanClasses[desktopSpanPattern[i % desktopSpanPattern.length]]}`
+                : ""
+            }
           >
             <ProductCard product={product} />
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -34,9 +34,12 @@ export default function Navbar() {
         Products
       </Link>
 
-      <div className={` ${playfair.className} text-xl tracking-wide`}>
+      <Link
+        href="/"
+        className={` ${playfair.className} text-xl cursor-pointer tracking-wide`}
+      >
         Or & Loom
-      </div>
+      </Link>
 
       <div className="flex items-center gap-2.5 md:4">
         <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
