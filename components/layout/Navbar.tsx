@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import type { MotionProps } from "framer-motion";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { fraunces, playfair } from "@/lib/fonts";
+import Link from "next/link";
 
 export default function Navbar() {
   const iconHover: MotionProps = {
@@ -25,12 +26,13 @@ export default function Navbar() {
 
   return (
     <nav className="flex justify-between items-center px-2 md:px-10 py-3 bg-[#F7F5F2] text-[#1A1A1A]">
-      <h3
+      <Link
+        href="/products"
         className={` ${fraunces.className} text-sm hidden md:block tracking-wide font-semibold 
       uppercase cursor-pointer hover:text-[#B5532C] transition-colors`}
       >
         Products
-      </h3>
+      </Link>
 
       <div className={` ${playfair.className} text-xl tracking-wide`}>
         Or & Loom
