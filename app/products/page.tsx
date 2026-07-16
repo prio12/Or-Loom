@@ -7,10 +7,33 @@ import { useState } from "react";
 import { CiGrid2H, CiGrid2V } from "react-icons/ci";
 import { IoGridOutline } from "react-icons/io5";
 import { IoMdGrid } from "react-icons/io";
+import ProductCard from "@/components/ui/ProductCard";
 
 export default function Products() {
   const categories = ["All", ...new Set(products.map((p) => p.category))];
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const filteredProducts =
+    selectedCategory === "All"
+      ? products
+      : products.filter((p) => p.category === selectedCategory);
+
+  const mobileSpanPattern = [6, 6, 4, 4, 4, 12];
+
+  const desktopSpanPattern = [6, 6, 4, 4, 4, 12, 3, 3, 3, 3];
+
+  const mobileSpanClasses: Record<number, string> = {
+    4: "col-span-4",
+    6: "col-span-6",
+    12: "col-span-12",
+  };
+
+  const desktopSpanClasses: Record<number, string> = {
+    3: "md:col-span-3",
+    4: "md:col-span-4",
+    6: "md:col-span-6",
+    12: "md:col-span-12",
+  };
 
   return (
     <div className="bg-[#F7F5F2] pt-5 px-2 md:px-10">
@@ -97,6 +120,17 @@ export default function Products() {
             <IoMdGrid size={20} />
           </button>
         </div>
+      </div>
+
+      <div className="grid grid-cols-12 gap-6 mt-8">
+        {filteredProducts.map((product, i) => (
+          <div
+            key={product.id}
+            className={`${mobileSpanClasses[mobileSpanPattern[i % mobileSpanPattern.length]]} ${desktopSpanClasses[desktopSpanPattern[i % desktopSpanPattern.length]]}`}
+          >
+            <ProductCard product={product} />
+          </div>
+        ))}
       </div>
     </div>
   );
