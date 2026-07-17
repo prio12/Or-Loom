@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { CiHeart, CiSearch, CiShoppingCart } from "react-icons/ci";
@@ -9,10 +10,18 @@ import Link from "next/link";
 import Drawer from "./Drawer";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
-  const totalItems = useCartStore((state) => state.totalItems());
   const wishlistCount = useWishlistStore((state) => state.items.length);
+
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  const totalItems = useCartStore((state) => state.totalItems());
 
   const iconHover: MotionProps = {
     whileHover: {
@@ -71,17 +80,19 @@ export default function Navbar() {
             )}
           </motion.div>
         </Link>
-        <motion.div
-          {...iconHover}
-          className="p-2 rounded-full cursor-pointer relative"
-        >
-          <CiShoppingCart size={22} />
-          {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 bg-[#B5532C] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
-              {totalItems}
-            </span>
-          )}
-        </motion.div>
+        <Link href="/cart">
+          <motion.div
+            {...iconHover}
+            className="p-2 rounded-full cursor-pointer relative"
+          >
+            <CiShoppingCart size={22} />
+            {hasMounted && totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#B5532C] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
+          </motion.div>
+        </Link>
         <label
           htmlFor="mobile-nav"
           className="block md:hidden cursor-pointer p-2"
