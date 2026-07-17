@@ -14,6 +14,9 @@ import { useSearchParams } from "next/navigation";
 
 export default function ProductsContent() {
   const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
 
   const categories = ["All", ...new Set(products.map((p) => p.category))];
   const [selectedCategory, setSelectedCategory] = useState(
@@ -34,7 +37,10 @@ export default function ProductsContent() {
       selectedCategory === "All" || p.category === selectedCategory;
     const matchesGender =
       selectedGender === "All" || p.gender === selectedGender;
-    return matchesCategory && matchesGender;
+    const matchesSearch = p.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesGender && matchesSearch;
   });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -102,6 +108,14 @@ export default function ProductsContent() {
           The Full Collection
         </h3>
       </div>
+
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="px-4 py-2 text-sm rounded-full border border-[#8A8578]/30 bg-white w-full md:w-64 focus:outline-none focus:border-[#B5532C]"
+      />
 
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-4 flex-wrap">

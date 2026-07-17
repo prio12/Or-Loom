@@ -64,9 +64,14 @@ export default function Navbar() {
       </Link>
 
       <div className="flex items-center gap-2.5 md:4">
-        <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
-          <CiSearch size={22} />
-        </motion.div>
+        <Link href="/products">
+          <motion.div
+            {...iconHover}
+            className="p-2 rounded-full cursor-pointer"
+          >
+            <CiSearch size={22} />
+          </motion.div>
+        </Link>
         <Link href="/wishlist">
           <motion.div
             {...iconHover}
