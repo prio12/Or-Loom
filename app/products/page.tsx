@@ -10,16 +10,23 @@ import ProductCard from "@/components/ui/ProductCard";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import Drawer from "@/components/layout/Drawer";
+import { useSearchParams } from "next/navigation";
 
 export default function Products() {
+  const searchParams = useSearchParams();
+
   const categories = ["All", ...new Set(products.map((p) => p.category))];
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || "All",
+  );
   const [viewMode, setViewMode] = useState<"grid" | "compact">("grid");
+
   const [sortOrder, setSortOrder] = useState<
     "none" | "low-to-high" | "high-to-low"
   >("none");
-  const [selectedGender, setSelectedGender] = useState<"All" | "Men" | "Women">(
-    "All",
+
+  const [selectedGender, setSelectedGender] = useState(
+    (searchParams.get("gender") as "All" | "Men" | "Women") || "All",
   );
 
   const filteredProducts = products.filter((p) => {

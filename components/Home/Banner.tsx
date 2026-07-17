@@ -57,7 +57,7 @@ export default function Banner() {
           >
             <motion.div {...ctaAnimation}>
               <Link
-                href="/men"
+                href="/products?gender=Men"
                 className="flex items-center gap-2 uppercase tracking-[0.2em]"
               >
                 Shop all menswear
@@ -88,7 +88,7 @@ export default function Banner() {
           >
             <motion.div {...ctaAnimation}>
               <Link
-                href="/women"
+                href="/products?gender=Women"
                 className="flex items-center gap-2 uppercase tracking-[0.2em]"
               >
                 Shop all womenswear

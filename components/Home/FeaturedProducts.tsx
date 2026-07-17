@@ -34,7 +34,7 @@ export default function FeaturedProducts() {
             >
               <motion.div {...ctaAnimation}>
                 <Link
-                  href="/men"
+                  href={`/products?category=${encodeURIComponent(product.category)}&gender=${product.gender}`}
                   className="flex items-center gap-2 uppercase tracking-[0.2em]"
                 >
                   {product?.category}
