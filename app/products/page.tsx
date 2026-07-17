@@ -18,11 +18,17 @@ export default function Products() {
   const [sortOrder, setSortOrder] = useState<
     "none" | "low-to-high" | "high-to-low"
   >("none");
+  const [selectedGender, setSelectedGender] = useState<"All" | "Men" | "Women">(
+    "All",
+  );
 
-  const filteredProducts =
-    selectedCategory === "All"
-      ? products
-      : products.filter((p) => p.category === selectedCategory);
+  const filteredProducts = products.filter((p) => {
+    const matchesCategory =
+      selectedCategory === "All" || p.category === selectedCategory;
+    const matchesGender =
+      selectedGender === "All" || p.gender === selectedGender;
+    return matchesCategory && matchesGender;
+  });
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortOrder === "low-to-high") return a.price - b.price;
@@ -133,6 +139,20 @@ export default function Products() {
                 Price: High to Low
               </button>
             </li>
+            <li className="mt-4 mb-2 font-medium">Gender</li>
+            {(["All", "Men", "Women"] as const).map((g) => (
+              <li key={g}>
+                <button
+                  onClick={() => {
+                    setSelectedGender(g);
+                    closeDrawer();
+                  }}
+                  className={`text-sm py-2 ${selectedGender === g ? "font-semibold text-[#B5532C]" : ""}`}
+                >
+                  {g}
+                </button>
+              </li>
+            ))}
             <li className="mt-4 mb-2 font-medium">Category</li>
             {categories.map((cat) => (
               <li key={cat}>
@@ -207,7 +227,7 @@ export default function Products() {
       </div>
 
       <motion.div
-        key={`${selectedCategory}-${viewMode}-${sortOrder}`}
+        key={`${selectedCategory}-${selectedGender}-${viewMode}-${sortOrder}`}
         variants={containerVariants}
         initial="hidden"
         animate="visible"

@@ -6,6 +6,7 @@ import type { MotionProps } from "framer-motion";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { fraunces, playfair } from "@/lib/fonts";
 import Link from "next/link";
+import Drawer from "./Drawer";
 
 export default function Navbar() {
   const iconHover: MotionProps = {
@@ -22,6 +23,13 @@ export default function Navbar() {
       stiffness: 100,
       damping: 10,
     },
+  };
+
+  const closeMobileNav = () => {
+    const navCheckbox = document.getElementById(
+      "mobile-nav",
+    ) as HTMLInputElement;
+    if (navCheckbox) navCheckbox.checked = false;
   };
 
   return (
@@ -51,9 +59,44 @@ export default function Navbar() {
         <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
           <CiShoppingCart size={22} />
         </motion.div>
-        <div className="block md:hidden">
-          <HiMenuAlt2 />
-        </div>
+        <label
+          htmlFor="mobile-nav"
+          className="block md:hidden cursor-pointer p-2"
+        >
+          <HiMenuAlt2 size={22} />
+        </label>
+
+        <Drawer id="mobile-nav">
+          <ul className="flex flex-col gap-1">
+            <li>
+              <Link
+                href="/"
+                onClick={closeMobileNav}
+                className={`${playfair.className} text-lg py-2 block`}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/products"
+                onClick={closeMobileNav}
+                className={`${fraunces.className} text-sm uppercase tracking-wide py-2 block`}
+              >
+                Products
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/cart"
+                onClick={closeMobileNav}
+                className={`${fraunces.className} text-sm uppercase tracking-wide py-2 block`}
+              >
+                Cart
+              </Link>
+            </li>
+          </ul>
+        </Drawer>
       </div>
     </nav>
   );
