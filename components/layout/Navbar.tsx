@@ -7,8 +7,13 @@ import { HiMenuAlt2 } from "react-icons/hi";
 import { fraunces, playfair } from "@/lib/fonts";
 import Link from "next/link";
 import Drawer from "./Drawer";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 
 export default function Navbar() {
+  const totalItems = useCartStore((state) => state.totalItems());
+  const wishlistCount = useWishlistStore((state) => state.items.length);
+
   const iconHover: MotionProps = {
     whileHover: {
       scale: 1.11,
@@ -53,11 +58,29 @@ export default function Navbar() {
         <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
           <CiSearch size={22} />
         </motion.div>
-        <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
-          <CiHeart size={22} />
-        </motion.div>
-        <motion.div {...iconHover} className="p-2 rounded-full cursor-pointer">
+        <Link href="/wishlist">
+          <motion.div
+            {...iconHover}
+            className="p-2 rounded-full cursor-pointer relative"
+          >
+            <CiHeart size={22} />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#B5532C] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+                {wishlistCount}
+              </span>
+            )}
+          </motion.div>
+        </Link>
+        <motion.div
+          {...iconHover}
+          className="p-2 rounded-full cursor-pointer relative"
+        >
           <CiShoppingCart size={22} />
+          {totalItems > 0 && (
+            <span className="absolute -top-1 -right-1 bg-[#B5532C] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+              {totalItems}
+            </span>
+          )}
         </motion.div>
         <label
           htmlFor="mobile-nav"

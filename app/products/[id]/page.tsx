@@ -1,5 +1,7 @@
 "use client";
 import products from "@/data/products.json";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 import { use, useState } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -18,7 +20,11 @@ export default function ProductDetails({
 
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const addItem = useCartStore((state) => state.addItem);
+  const toggleWishlist = useWishlistStore((state) => state.toggleItem);
+  const isWishlisted = useWishlistStore((state) =>
+    state.isWishlisted(product.id),
+  );
 
   return (
     <div className="bg-[#F7F5F2] px-4 md:px-10 py-10">
@@ -49,7 +55,14 @@ export default function ProductDetails({
 
           <p className="text-lg text-[#B5532C]">${product.price}</p>
           <button
-            onClick={() => setIsWishlisted(!isWishlisted)}
+            onClick={() =>
+              toggleWishlist({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+              })
+            }
             className="flex items-center gap-2 text-sm w-fit cursor-pointer"
           >
             <CiHeart
@@ -105,6 +118,17 @@ export default function ProductDetails({
           </div>
           <button
             disabled={!product.inStock}
+            onClick={() =>
+              addItem({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                color: selectedColor,
+                size: selectedSize,
+                quantity: 1,
+              })
+            }
             className={`mt-4 py-3 rounded-md text-sm uppercase tracking-widest transition-colors ${
               product.inStock
                 ? "bg-[#B5532C] text-white hover:opacity-90 cursor-pointer"
